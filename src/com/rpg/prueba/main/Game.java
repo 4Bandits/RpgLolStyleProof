@@ -12,33 +12,19 @@ import com.rpg.prueba.entities.View;
 import com.rpg.prueba.levels.Level;
 import com.rpg.prueba.levels.Level01;
 import com.rpg.prueba.sprites.Sprite;
+import com.rpg.prueba.sprites.StationarySprite;
 
 public class Game implements ApplicationListener {
 
    
     private Array<Level> levels;
 
-    //private HashMap<String, State> states;
-
     private TiledMap map;
 
     private Array<Sprite> sprites;
 
-    /*private enum State {
-        level01State,
-        houseState,
-        caveState,
-        cave02State
-    }
-
-    private State state;*/
-
-    //private boolean stateChanged;
-
     private Level currentLevel;
     private Level01 level1;
-    /*private Cave cave;
-    private Cave02 cave2;*/
 
     private View view;
 
@@ -65,20 +51,10 @@ public class Game implements ApplicationListener {
         levels = new Array<Level>();
         
          level1 = new Level01();
-        /* cave = new Cave();
-         cave2= new Cave02();
-        states = new HashMap<String, State>(3);
-        states.put("level01", State.level01State);
-        states.put("cave", State.caveState);
-        states.put("cave02", State.cave02State);*/
+    
         
         levels.add(level1);
-        /*levels.add(cave);
-        levels.add(cave2);
        
-
-        state = State.level01State;*/
-        //stateChanged = false;
         currentLevel = level1;
         
         map = currentLevel.getMap();
@@ -100,23 +76,6 @@ public class Game implements ApplicationListener {
 
     @Override
     public void render() {
-        /*if (stateChanged) {
-            switch (state) {
-                case level01State:
-                    currentLevel = level1;
-                    setupLevel();
-                    break;
-                case caveState:
-                    currentLevel = cave;
-                    setupLevel();
-                    break;
-                case cave02State:
-                    currentLevel = cave2;
-                    setupLevel();
-                    break;
-            }
-            stateChanged = false;
-        }*/
 
         view.getInput();
         updateSprites(Gdx.graphics.getDeltaTime());
@@ -125,9 +84,9 @@ public class Game implements ApplicationListener {
 
     @Override
     public void dispose() {
-       /* for (StationarySprite sprite : level01.getStationarySprites()) {
+        for (StationarySprite sprite : level1.getStationarySprites()) {
             sprite.getTexture().dispose();
-        }*/
+        }
         for (Level level : levels) {
             for (Sprite sprite : level.getSprites()) {
                 sprite.getTexture().dispose();
@@ -279,10 +238,7 @@ public class Game implements ApplicationListener {
 		for (Rectangle tile: tiles) {
             if (spriteRect.overlaps(tile)) {
                 sprite.setDY(0);
-                /*if (layerIndex == 5) {
-                    exitRoom(new Vector3(tile.getX(), tile.getY(), 0));
-                }
-                break;*/
+              
             }
         }
 	}
@@ -319,10 +275,7 @@ public class Game implements ApplicationListener {
 		for (Rectangle tile: tiles) {
             if(spriteRect.overlaps(tile)) {
                 sprite.setDX(0);
-                /*if (layerIndex == 5) {
-                    exitRoom(new Vector3(tile.getX(), tile.getY(), 0));
-                }
-                break;*/
+               
             }
         }
 	}
@@ -340,18 +293,5 @@ public class Game implements ApplicationListener {
         spriteRect.x += sprite.getDX();
 	}
 
-   /* private void exitRoom(Vector3 tile) {
-        for (Vector3 point : currentLevel.getExits().keySet()) {
-            if (point.x == tile.x && point.y == tile.y) {
-                state = states.get(currentLevel.getExits().get(point));
-                stateChanged = true;
-            }
-        }
-    }*/
-
-    /*private void combat() {
-        for (Sprite sprite : sprites) {
-
-        }
-    }*/
+ 
 }

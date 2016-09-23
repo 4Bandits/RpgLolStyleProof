@@ -15,7 +15,7 @@ public class Level {
     protected TiledMap map;
     protected Array<Sprite> sprites;
     protected Array<StationarySprite> stationarySprites;
-    protected HashMap<Vector3, String> exits;
+    
     protected float red;
     protected float green;
     protected float blue;
@@ -23,7 +23,7 @@ public class Level {
     public Level() {
         sprites = new Array<Sprite>();
         stationarySprites = new Array<StationarySprite>();
-        exits = new HashMap<Vector3, String>();
+      
     }
 
     public Array<StationarySprite> getStationarySprites() {
@@ -50,7 +50,5 @@ public class Level {
         return blue;
     }
 
-    public HashMap<Vector3, String> getExits() {
-        return exits;
-    }
+    
 }

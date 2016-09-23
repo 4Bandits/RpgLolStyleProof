@@ -304,7 +304,7 @@ public class View {
 
     // TODO Add observer pattern: Game observes View and is notified of input, then modifies the player. 
     public void getInput() {
-    	Vampire player = (Vampire) sprites.get(0);
+    	Champion player = (Champion) sprites.get(0);
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();

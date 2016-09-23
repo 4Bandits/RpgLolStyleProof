@@ -2,6 +2,7 @@ package com.rpg.prueba.levels;
 
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector3;
+import com.rpg.prueba.entities.Champion;
 import com.rpg.prueba.entities.Vampire;
 import com.rpg.prueba.entities.Werewolf;
 import com.rpg.prueba.entities.Wizard;
@@ -13,9 +14,9 @@ public class Level01 extends Level {
     public Level01() {
         map = new TmxMapLoader().load("maps/level01.tmx");
 
-        //Werewolf player = new Werewolf(50, 50, 80);
-        //Wizard player = new Wizard(50, 50, 78);
-        Vampire player = new Vampire(50, 50, 48);
+        Champion player = new Werewolf(50, 50, 80);
+        //Champion player = new Wizard(50, 50, 78);
+        //Champion player = new Vampire(50, 50, 48);
 
         sprites.add(player);
 
@@ -27,7 +28,7 @@ public class Level01 extends Level {
         stationarySprites.add(girl);
         stationarySprites.add(forestGuy);
 
-        exits.put(new Vector3(73.2f, 35.8f, 0), "cave");
+        
 
         red = 74f/255f;
         green = 160f/255f;
