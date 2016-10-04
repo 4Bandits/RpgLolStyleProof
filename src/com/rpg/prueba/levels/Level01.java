@@ -14,9 +14,9 @@ public class Level01 extends Level {
     public Level01() {
         map = new TmxMapLoader().load("maps/level01.tmx");
 
-        Champion player = new Werewolf(50, 50, 80);
+        //Champion player = new Werewolf(50, 50, 80);
         //Champion player = new Wizard(50, 50, 78);
-        //Champion player = new Vampire(50, 50, 48);
+        Champion player = new Vampire(50, 50, 48);
 
         sprites.add(player);
 

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class StationarySprite extends Sprite {
+public class StationarySprite extends ChampionSprite {
 
     private Animation animation;
     private float size;

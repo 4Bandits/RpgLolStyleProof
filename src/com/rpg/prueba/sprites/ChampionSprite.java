@@ -1,12 +1,12 @@
 package com.rpg.prueba.sprites;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.Sprite;;
 
-public class Sprite  implements Comparable<Sprite> {
+public class ChampionSprite extends Sprite  implements Comparable<ChampionSprite> {
     
     public static float SIZE =2.425f; //1.625f;
     public static float MAX_VELOCITY = 4f;
@@ -55,7 +55,7 @@ public class Sprite  implements Comparable<Sprite> {
     protected Animation attackRightAnimation;
     protected Animation deathAnimation;
 
-    public Sprite(float x, float y) {
+    public ChampionSprite(float x, float y) {
         
         position = new Vector2();
         velocity = new Vector2();
@@ -226,7 +226,7 @@ public class Sprite  implements Comparable<Sprite> {
     }
 
     @Override
-    public int compareTo(Sprite other) {
+    public int compareTo(ChampionSprite other) {
         return other.comparableY().compareTo(comparableY());
 
     }

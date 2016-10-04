@@ -1,7 +1,6 @@
 package com.rpg.prueba.entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -20,14 +20,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.rpg.prueba.levels.Level;
-import com.rpg.prueba.sprites.Sprite;
+import com.rpg.prueba.sprites.ChampionSprite;
 import com.rpg.prueba.sprites.StationarySprite;
 
 
 public class View {
-    private Array<Sprite> sprites;
-    private Array<Sprite> sortedUpSprites;
-    private Array<Sprite> sortedDownSprites;
+    private Array<ChampionSprite> sprites;
+    private Array<ChampionSprite> sortedUpSprites;
+    private Array<ChampionSprite> sortedDownSprites;
     private Array<StationarySprite> stationarySprites;
     private float red;
     private float green;
@@ -126,7 +126,7 @@ public class View {
         stage.addActor(table);
 
        /* hpLabel = new Label("  HP:  ", skin);
-        hp = new Label(Integer.toString(sprites.get(0).getHP()), skin);
+        hp = new Label(Integer.toString(ChampionSprites.get(0).getHP()), skin);
         table.add(hpLabel);
         table.add(hp).width(50);*/
     }
@@ -146,22 +146,22 @@ public class View {
         mapRenderer.render(underlayer1);
         mapRenderer.render(underlayer2);
 
-        sortedUpSprites = new Array<Sprite>(sprites);
-        /*sortedUpSprites.sort(new SpriteUpComparator());*/
+        sortedUpSprites = new Array<ChampionSprite>(sprites);
+        /*sortedUpChampionSprites.sort(new ChampionSpriteUpComparator());*/
 
-        // sortedDownSprites = new Array<Sprite>(sprites);
-        // sortedDownSprites.sort(new SpriteDownComparator());
+        // sortedDownChampionSprites = new Array<ChampionSprite>(ChampionSprites);
+        // sortedDownChampionSprites.sort(new ChampionSpriteDownComparator());
 
         spriteBatch.begin();
-        renderStationarySprites();
-        renderSprites();
-        // renderSpritesTop();
-        renderStationarySpritesTop();
+        renderStationaryChampionSprites();
+        renderChampionSprites();
+        // renderChampionSpritesTop();
+        renderStationaryChampionSpritesTop();
         spriteBatch.end();
 
         mapRenderer.render(overLayer);
 
-        //hp.setText(Integer.toString(sprites.get(0).getHP()));
+        //hp.setText(Integer.toString(ChampionSprites.get(0).getHP()));
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
@@ -170,271 +170,207 @@ public class View {
         stage.setViewport(width, height, true);
     }
 
-    private void renderSprites() {
+    private void renderChampionSprites() {
+    	
+    	ShaderProgram shader= this.colorShader();
+    	Color c;
     	//Usar los lamdas de java 8
-        for (Sprite sprite : sortedUpSprites) {
-            sprite.setAnimationTime(Gdx.graphics.getDeltaTime());
+        for (ChampionSprite sprite : sortedUpSprites) {
+        	sprite.setAnimationTime(Gdx.graphics.getDeltaTime());
               //Hacer State
             switch (sprite.getState()) {
                 case standFront:
-                    sprite.setCurrentFrame(sprite.getStandFrontFrame());
+                	sprite.setCurrentFrame(sprite.getStandFrontFrame());
                     break;
                 case standBack:
-                    sprite.setCurrentFrame(sprite.getStandBackFrame());
+                	sprite.setCurrentFrame(sprite.getStandBackFrame());
                     break;
                 case standLeft:
-                    sprite.setCurrentFrame(sprite.getStandLeftFrame());
+                	sprite.setCurrentFrame(sprite.getStandLeftFrame());
                     break;
                 case standRight:
-                    sprite.setCurrentFrame(sprite.getStandRightFrame());
+                	sprite.setCurrentFrame(sprite.getStandRightFrame());
                     break;
                 case walkFront:
-                    sprite.setCurrentFrame(sprite.getWalkFrontFrame());
+                	sprite.setCurrentFrame(sprite.getWalkFrontFrame());
                     break;
                 case walkBack:
-                    sprite.setCurrentFrame(sprite.getWalkBackFrame());
+                	sprite.setCurrentFrame(sprite.getWalkBackFrame());
                     break;
                 case walkLeft:
-                    sprite.setCurrentFrame(sprite.getWalkLeftFrame());
+                	sprite.setCurrentFrame(sprite.getWalkLeftFrame());
                     break;
                 case walkRight:
-                    sprite.setCurrentFrame(sprite.getWalkRightFrame());
+                	sprite.setCurrentFrame(sprite.getWalkRightFrame());
                     break;
                 case attackFront:
-                    sprite.setCurrentFrame(sprite.getAttackFrontFrame());
+                	c=spriteBatch.getColor();
+                	sprite.setCurrentFrame(sprite.getStandFrontFrame());
+                	spriteBatch.setColor(Color.BLUE);
+                    sprite.setColor(Color.BLUE);
+                    spriteBatch.draw(sprite.getTexture(),sprite.getX(),sprite.getY(),sprite.getOriginX(),sprite.getOriginY(),sprite.getWidth(),sprite.getHeight(),1,1);
+                    spriteBatch.setColor(c);
+                    
                     break;
                 case attackBack:
-                    sprite.setCurrentFrame(sprite.getAttackBackFrame());
+                	c=spriteBatch.getColor();
+                	sprite.setCurrentFrame(sprite.getStandBackFrame());
+                	spriteBatch.setColor(Color.BLUE);
+                    sprite.setColor(Color.BLUE);
+                    spriteBatch.draw(sprite.getTexture(),sprite.getX(),sprite.getY(),sprite.getOriginX(),sprite.getOriginY(),sprite.getWidth(),sprite.getHeight(),1,1);
+                    spriteBatch.setShader(null);
+                    spriteBatch.setColor(c);
                     break;
                 case attackLeft:
-                    sprite.setCurrentFrame(sprite.getAttackLeftFrame());
-                    break;
+                	c=spriteBatch.getColor();
+                	sprite.setCurrentFrame(sprite.getStandLeftFrame());
+                	spriteBatch.setColor(Color.BLUE);
+                    sprite.setColor(Color.BLUE);
+                    spriteBatch.draw(sprite.getTexture(),sprite.getX(),sprite.getY(),sprite.getOriginX(),sprite.getOriginY(),sprite.getWidth(),sprite.getHeight(),1,1);
+                    spriteBatch.setShader(null);
+                    spriteBatch.setColor(c);
+                	break;
                 case attackRight:
-                    sprite.setCurrentFrame(sprite.getAttackRightFrame());
-                    break;
+                	c=spriteBatch.getColor();
+                	sprite.setCurrentFrame(sprite.getStandRightFrame());
+                	spriteBatch.setColor(Color.BLUE);
+                    sprite.setColor(Color.BLUE);
+                    spriteBatch.draw(sprite.getTexture(),sprite.getX(),sprite.getY(),sprite.getOriginX(),sprite.getOriginY(),sprite.getWidth(),sprite.getHeight(),1,1);
+                    spriteBatch.setShader(null);
+                    spriteBatch.setColor(c);
+                	break;
                 case death:
-                    sprite.setCurrentFrame(sprite.getDeathFrame());
+                	sprite.setCurrentFrame(sprite.getDeathFrame());
                     break;
             }
 
             if (!sprite.isFacingLeft()) {
                 spriteBatch.draw(sprite.getCurrentFrame(), sprite.getX(), sprite.getY(),
-                                 Sprite.SIZE, Sprite.SIZE);
+                                 ChampionSprite.SIZE, ChampionSprite.SIZE);
             } else {
-                spriteBatch.draw(sprite.getCurrentFrame(), sprite.getX() + Sprite.SIZE, sprite.getY(),
-                                 -Sprite.SIZE, Sprite.SIZE);
+                spriteBatch.draw(sprite.getCurrentFrame(), sprite.getX() + ChampionSprite.SIZE, sprite.getY(),
+                                 -ChampionSprite.SIZE, ChampionSprite.SIZE);
             }
         }
     }
 
-    private void renderSpritesTop() {
-        for (Sprite sprite : sortedDownSprites) {
-            sprite.setAnimationTime(Gdx.graphics.getDeltaTime());
+    private ShaderProgram colorShader() {
+    	String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+                + "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+                + "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
+                + "uniform mat4 u_projTrans;\n" //
+                + "varying vec4 v_color;\n" //
+                + "varying vec2 v_texCoords;\n" //
+                + "\n" //
+                + "void main()\n" //
+                + "{\n" //
+                + "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+                + "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
+                + "   gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+                + "}\n";
+            String fragmentShader = "#ifdef GL_ES\n" //
+                + "#define LOWP lowp\n" //
+                + "precision mediump float;\n" //
+                + "#else\n" //
+                + "#define LOWP \n" //
+                + "#endif\n" //
+                + "varying LOWP vec4 v_color;\n" //
+                + "varying vec2 v_texCoords;\n" //
+                + "uniform sampler2D u_texture;\n" //
+                + "void main()\n"//
+                + "{\n" //
+                + "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords).a;\n" //
+                + "}";
+
+            return new ShaderProgram(vertexShader, fragmentShader);
+	}
+
+	private void renderChampionSpritesTop() {
+        for (ChampionSprite sprite : sortedDownSprites) {
+        	sprite.setAnimationTime(Gdx.graphics.getDeltaTime());
 
             switch (sprite.getState()) {
                 case standFront:
-                    sprite.setCurrentFrameTop(sprite.getStandFrontFrame());
+                	sprite.setCurrentFrameTop(sprite.getStandFrontFrame());
                     break;
                 case standBack:
-                    sprite.setCurrentFrameTop(sprite.getStandBackFrame());
+                	sprite.setCurrentFrameTop(sprite.getStandBackFrame());
                     break;
                 case standLeft:
-                    sprite.setCurrentFrameTop(sprite.getStandLeftFrame());
+                	sprite.setCurrentFrameTop(sprite.getStandLeftFrame());
                     break;
                 case standRight:
-                    sprite.setCurrentFrameTop(sprite.getStandRightFrame());
+                	sprite.setCurrentFrameTop(sprite.getStandRightFrame());
                     break;
                 case walkFront:
-                    sprite.setCurrentFrameTop(sprite.getWalkFrontFrame());
+                	sprite.setCurrentFrameTop(sprite.getWalkFrontFrame());
                     break;
                 case walkBack:
-                    sprite.setCurrentFrameTop(sprite.getWalkBackFrame());
+                	sprite.setCurrentFrameTop(sprite.getWalkBackFrame());
                     break;
                 case walkLeft:
-                    sprite.setCurrentFrameTop(sprite.getWalkLeftFrame());
+                	sprite.setCurrentFrameTop(sprite.getWalkLeftFrame());
                     break;
                 case walkRight:
-                    sprite.setCurrentFrameTop(sprite.getWalkRightFrame());
+                	sprite.setCurrentFrameTop(sprite.getWalkRightFrame());
                     break;
                 case attackFront:
-                    sprite.setCurrentFrameTop(sprite.getAttackFrontFrame());
+                	sprite.setCurrentFrameTop(sprite.getAttackFrontFrame());
+                    
                     break;
                 case attackBack:
-                    sprite.setCurrentFrameTop(sprite.getAttackBackFrame());
+                	sprite.setCurrentFrameTop(sprite.getAttackBackFrame());
+                    
                     break;
                 case attackLeft:
-                    sprite.setCurrentFrameTop(sprite.getAttackLeftFrame());
+                	sprite.setCurrentFrameTop(sprite.getAttackLeftFrame());
+                    
                     break;
                 case attackRight:
-                    sprite.setCurrentFrameTop(sprite.getAttackRightFrame());
+                	sprite.setCurrentFrameTop(sprite.getAttackRightFrame());
+                    
                     break;
                 case death:
-                    sprite.setCurrentFrameTop(sprite.getDeathFrame());
+                	sprite.setCurrentFrameTop(sprite.getDeathFrame());
                     break;
             }
 
             if (!sprite.isFacingLeft()) {
                 spriteBatch.draw(sprite.getCurrentFrameTop(), sprite.getX(), sprite.getY() + 1,
-                        Sprite.SIZE, Sprite.SIZE);
+                        ChampionSprite.SIZE, ChampionSprite.SIZE);
             } else {
-                spriteBatch.draw(sprite.getCurrentFrameTop(), sprite.getX() + Sprite.SIZE, sprite.getY() + 1,
-                        -Sprite.SIZE, Sprite.SIZE);
+                spriteBatch.draw(sprite.getCurrentFrameTop(), sprite.getX() + ChampionSprite.SIZE, sprite.getY() + 1,
+                        -ChampionSprite.SIZE, ChampionSprite.SIZE);
             }
         }
     }
 
-    private void renderStationarySprites() {
-        for (StationarySprite stationarySprite : stationarySprites) {
-            stationarySprite.setAnimationTime(Gdx.graphics.getDeltaTime());
+    private void renderStationaryChampionSprites() {
+        for (StationarySprite stationaryChampionSprite : stationarySprites) {
+            stationaryChampionSprite.setAnimationTime(Gdx.graphics.getDeltaTime());
 
-            stationarySprite.setCurrentFrame(stationarySprite.getAnimationFrame());
+            stationaryChampionSprite.setCurrentFrame(stationaryChampionSprite.getAnimationFrame());
 
-            spriteBatch.draw(stationarySprite.getCurrentFrame(), stationarySprite.getX(), stationarySprite.getY(),
-                             stationarySprite.getSize(), stationarySprite.getSize());
+            spriteBatch.draw(stationaryChampionSprite.getCurrentFrame(), stationaryChampionSprite.getX(), stationaryChampionSprite.getY(),
+                             stationaryChampionSprite.getSize(), stationaryChampionSprite.getSize());
         }
     }
 
-    private void renderStationarySpritesTop() {
-        for (StationarySprite stationarySprite : stationarySprites) {
-            spriteBatch.draw(stationarySprite.getHeadTexture(),
-                             stationarySprite.getX(), stationarySprite.getY() + 1,
-                             stationarySprite.getSize(), stationarySprite.getSize());
+    private void renderStationaryChampionSpritesTop() {
+        for (StationarySprite stationaryChampionSprite : stationarySprites) {
+            spriteBatch.draw(stationaryChampionSprite.getHeadTexture(),
+                             stationaryChampionSprite.getX(), stationaryChampionSprite.getY() + 1,
+                             stationaryChampionSprite.getSize(), stationaryChampionSprite.getSize());
         }
     }
 
-    // TODO Add observer pattern: Game observes View and is notified of input, then modifies the player. 
+    
     public void getInput() {
     	Champion player = (Champion) sprites.get(0);
-
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            Gdx.app.exit();
-        }
-        if (isHeadingOnlyUp() ) {
-            player.setState(Sprite.State.walkBack);
-            player.setDY(Sprite.MAX_VELOCITY);
-            player.setDX(0f);
-        }
-        if (isHeadingOnlyDown()) {
-            player.setState(Sprite.State.walkFront);
-            player.setDY(-Sprite.MAX_VELOCITY);
-            player.setDX(0f);
-        }
-        if (isHeadingOnlyLeft()) {
-            player.setFacingLeft(true);
-            player.setState(Sprite.State.walkLeft);
-            player.setDX(-Sprite.MAX_VELOCITY);
-            player.setDY(0f);
-        }
-        if (isHeadingOnlyRight()) {
-            player.setFacingLeft(false);
-            player.setState(Sprite.State.walkRight);
-            player.setDX(Sprite.MAX_VELOCITY);
-            player.setDY(0f);
-        }
+        player.handleInputOn(this);
         
-        if(isHeadingUpAndRight()){
-        	 player.setFacingLeft(false);
-             player.setState(Sprite.State.walkRight);
-             player.setDX(Sprite.MAX_VELOCITY/1.5f);
-             player.setDY(Sprite.MAX_VELOCITY/1.5f);
-        }
-        if(isHeadingUpAndLeft()){
-       	 player.setFacingLeft(true);
-            player.setState(Sprite.State.walkLeft);
-            player.setDX(-Sprite.MAX_VELOCITY/1.5f);
-            player.setDY(Sprite.MAX_VELOCITY/1.5f);
-       }
-        if(isHeadingDownAndRight()){
-       	 player.setFacingLeft(false);
-            player.setState(Sprite.State.walkRight);
-            player.setDX(Sprite.MAX_VELOCITY/1.5f);
-            player.setDY(-Sprite.MAX_VELOCITY/1.5f);
-       }
-        if(isHeadingDownAndLeft()){
-       	 player.setFacingLeft(true);
-            player.setState(Sprite.State.walkLeft);
-            player.setDX(-Sprite.MAX_VELOCITY/1.5f);
-            player.setDY(-Sprite.MAX_VELOCITY/1.5f);
-       }
-
-        if (Gdx.input.justTouched()) {
-            Vector3 point = getWorldPoint(Gdx.input.getX(), Gdx.input.getY());
-            player.setPosition(point.x, point.y);
-
-        }
-
-        /*if (Gdx.input.isKeyPressed(Input.Keys.H)) {
-            player.setHP(player.getHP() - 1);
-        }*/
-
-//        if (inputProcessor.keyTyped('t')) {
-//            hpLabel.setText("Changed!");
-//        }
     }
-    private boolean isHeadingUpAndRight() {
-		return (Gdx.input.isKeyPressed(Input.Keys.UP) || 
-			   Gdx.input.isKeyPressed(Input.Keys.W)) && 
-			     (!(Gdx.input.isKeyPressed(Input.Keys.LEFT) || 
-			       Gdx.input.isKeyPressed(Input.Keys.A))) && 
-			        ((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || 
-			          Gdx.input.isKeyPressed(Input.Keys.D)));
-	}
-    private boolean isHeadingUpAndLeft() {
-		return (Gdx.input.isKeyPressed(Input.Keys.UP) || 
-			   Gdx.input.isKeyPressed(Input.Keys.W)) && 
-			     ((Gdx.input.isKeyPressed(Input.Keys.LEFT) || 
-			       Gdx.input.isKeyPressed(Input.Keys.A)) && 
-			        !((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || 
-			          Gdx.input.isKeyPressed(Input.Keys.D))));
-	}
-    private boolean isHeadingDownAndRight() {
-		return (Gdx.input.isKeyPressed(Input.Keys.DOWN) || 
-			   Gdx.input.isKeyPressed(Input.Keys.S)) && 
-			     !(Gdx.input.isKeyPressed(Input.Keys.LEFT) || 
-			       Gdx.input.isKeyPressed(Input.Keys.A)) && 
-			        ((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || 
-			          Gdx.input.isKeyPressed(Input.Keys.D)));
-	}
-    private boolean isHeadingDownAndLeft() {
-		return (Gdx.input.isKeyPressed(Input.Keys.DOWN) || 
-			   Gdx.input.isKeyPressed(Input.Keys.S)) && 
-			     (Gdx.input.isKeyPressed(Input.Keys.LEFT) || 
-			       Gdx.input.isKeyPressed(Input.Keys.A)) && 
-			        !((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || 
-			          Gdx.input.isKeyPressed(Input.Keys.D)));
-	}
-	private boolean isHeadingOnlyUp() {
-		return (Gdx.input.isKeyPressed(Input.Keys.UP) || 
-			   Gdx.input.isKeyPressed(Input.Keys.W)) && 
-			     !(Gdx.input.isKeyPressed(Input.Keys.LEFT) || 
-			       Gdx.input.isKeyPressed(Input.Keys.A)) && 
-			        !((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || 
-			          Gdx.input.isKeyPressed(Input.Keys.D)));
-	}
-	private boolean isHeadingOnlyDown() {
-		return (Gdx.input.isKeyPressed(Input.Keys.DOWN) || 
-			   Gdx.input.isKeyPressed(Input.Keys.S)) && 
-			     !(Gdx.input.isKeyPressed(Input.Keys.LEFT) || 
-			       Gdx.input.isKeyPressed(Input.Keys.A)) && 
-			        !((Gdx.input.isKeyPressed(Input.Keys.RIGHT) || 
-			          Gdx.input.isKeyPressed(Input.Keys.D)));
-	}
-	private boolean isHeadingOnlyLeft() {
-		return (Gdx.input.isKeyPressed(Input.Keys.LEFT) || 
-			   Gdx.input.isKeyPressed(Input.Keys.A)) && 
-			     !(Gdx.input.isKeyPressed(Input.Keys.UP) || 
-			       Gdx.input.isKeyPressed(Input.Keys.W)) && 
-			        !((Gdx.input.isKeyPressed(Input.Keys.DOWN) || 
-			          Gdx.input.isKeyPressed(Input.Keys.S)));
-	}
-	private boolean isHeadingOnlyRight() {
-		return (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || 
-			   Gdx.input.isKeyPressed(Input.Keys.D)) && 
-			     !(Gdx.input.isKeyPressed(Input.Keys.UP) || 
-			       Gdx.input.isKeyPressed(Input.Keys.W)) && 
-			        !((Gdx.input.isKeyPressed(Input.Keys.DOWN) || 
-			          Gdx.input.isKeyPressed(Input.Keys.S)));
-	}
+    
     public Vector3 getWorldPoint(float x, float y) {
         Vector3 worldPoint = new Vector3(x, y, 0);
         camera.unproject(worldPoint);

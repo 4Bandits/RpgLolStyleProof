@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.rpg.prueba.sprites.Sprite;
+import com.rpg.prueba.sprites.ChampionSprite;
 import com.rpg.prueba.sprites.StationarySprite;
 
 
@@ -13,7 +13,7 @@ import com.rpg.prueba.sprites.StationarySprite;
 public class Level {
 
     protected TiledMap map;
-    protected Array<Sprite> sprites;
+    protected Array<ChampionSprite> sprites;
     protected Array<StationarySprite> stationarySprites;
     
     protected float red;
@@ -21,7 +21,7 @@ public class Level {
     protected float blue;
 
     public Level() {
-        sprites = new Array<Sprite>();
+        sprites = new Array<ChampionSprite>();
         stationarySprites = new Array<StationarySprite>();
       
     }
@@ -34,7 +34,7 @@ public class Level {
         return map;
     }
 
-    public Array<Sprite> getSprites() {
+    public Array<ChampionSprite> getSprites() {
         return sprites;
     }
 

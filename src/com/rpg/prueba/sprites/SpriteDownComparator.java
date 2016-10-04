@@ -2,9 +2,9 @@ package com.rpg.prueba.sprites;
 
 import java.util.Comparator;
 
-public class SpriteDownComparator implements Comparator<Sprite> {
+public class SpriteDownComparator implements Comparator<ChampionSprite> {
     @Override
-    public int compare(Sprite s1, Sprite s2) {
+    public int compare(ChampionSprite s1, ChampionSprite s2) {
         return s1.compareTo(s2);
     }
 }

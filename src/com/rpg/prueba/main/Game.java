@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.rpg.prueba.entities.View;
 import com.rpg.prueba.levels.Level;
 import com.rpg.prueba.levels.Level01;
-import com.rpg.prueba.sprites.Sprite;
+import com.rpg.prueba.sprites.ChampionSprite;
 import com.rpg.prueba.sprites.StationarySprite;
 
 public class Game implements ApplicationListener {
@@ -21,7 +21,7 @@ public class Game implements ApplicationListener {
 
     private TiledMap map;
 
-    private Array<Sprite> sprites;
+    private Array<ChampionSprite> sprites;
 
     private Level currentLevel;
     private Level01 level1;
@@ -88,7 +88,7 @@ public class Game implements ApplicationListener {
             sprite.getTexture().dispose();
         }
         for (Level level : levels) {
-            for (Sprite sprite : level.getSprites()) {
+            for (ChampionSprite sprite : level.getSprites()) {
                 sprite.getTexture().dispose();
             }
             level.getMap().dispose();
@@ -100,37 +100,37 @@ public class Game implements ApplicationListener {
     }
 
     private void updateSprites(float deltaTime) {
-        for (Sprite sprite : sprites) {
+        for (ChampionSprite sprite : sprites) {
             // Check for map edges.
             if (sprite.getX() < 0) {
                 sprite.setX(0);
             }
-            if (sprite.getX() > 100 - Sprite.SIZE) {
-                sprite.setX(100 - Sprite.SIZE);
+            if (sprite.getX() > 100 - ChampionSprite.SIZE) {
+                sprite.setX(100 - ChampionSprite.SIZE);
             }
             if (sprite.getY() < 1) {
                 sprite.setY(1);
             }
-            if (sprite.getY() > 100 - Sprite.SIZE) {
-                sprite.setY(100 - Sprite.SIZE);
+            if (sprite.getY() > 100 - ChampionSprite.SIZE) {
+                sprite.setY(100 - ChampionSprite.SIZE);
             }
 
             // Manage velocity and switch states.
-            if (Math.abs(sprite.getDX()) > Sprite.MAX_VELOCITY) {
-                sprite.setDX(Math.signum(sprite.getDX()) * Sprite.MAX_VELOCITY);
+            if (Math.abs(sprite.getDX()) > ChampionSprite.MAX_VELOCITY) {
+                sprite.setDX(Math.signum(sprite.getDX()) * ChampionSprite.MAX_VELOCITY);
             }
-            if (Math.abs(sprite.getDY()) > Sprite.MAX_VELOCITY) {
-                sprite.setDY(Math.signum(sprite.getDY()) * Sprite.MAX_VELOCITY);
+            if (Math.abs(sprite.getDY()) > ChampionSprite.MAX_VELOCITY) {
+                sprite.setDY(Math.signum(sprite.getDY()) * ChampionSprite.MAX_VELOCITY);
             }
             if (Math.abs(sprite.getDX()) < 1) {
                 sprite.setDX(0);
 
                 switch (sprite.getState()) {
                     case walkLeft:
-                        sprite.setState(Sprite.State.standLeft);
+                        sprite.setState(ChampionSprite.State.standLeft);
                         break;
                     case walkRight:
-                        sprite.setState(Sprite.State.standRight);
+                        sprite.setState(ChampionSprite.State.standRight);
                         break;
 				default:
 					break;
@@ -141,10 +141,10 @@ public class Game implements ApplicationListener {
 
                 switch (sprite.getState()) {
                     case walkFront:
-                        sprite.setState(Sprite.State.standFront);
+                        sprite.setState(ChampionSprite.State.standFront);
                         break;
                     case walkBack:
-                        sprite.setState(Sprite.State.standBack);
+                        sprite.setState(ChampionSprite.State.standBack);
                         break;
 				default:
 					break;
@@ -160,8 +160,8 @@ public class Game implements ApplicationListener {
             sprite.getVelocity().scl(1 / deltaTime);
 
             // Apply damping to the velocity so the sprite doesn't walk infinitely once a key is pressed.
-            sprite.setDX(sprite.getDX() * Sprite.DAMPING);
-            sprite.setDY(sprite.getDY() * Sprite.DAMPING);
+            sprite.setDX(sprite.getDX() * ChampionSprite.DAMPING);
+            sprite.setDY(sprite.getDY() * ChampionSprite.DAMPING);
 
         }
     }
@@ -190,9 +190,9 @@ public class Game implements ApplicationListener {
         }
     }
 
-    public void detectCollisions(Sprite sprite, int layerIndex) {
+    public void detectCollisions(ChampionSprite sprite, int layerIndex) {
         Rectangle spriteRect = rectPool.obtain();
-        spriteRect.set(sprite.getX() + 0.3f, sprite.getY() - 0.3f, Sprite.SIZE - 0.6f, Sprite.SIZE - 0.6f);
+        spriteRect.set(sprite.getX() + 0.3f, sprite.getY() - 0.3f, ChampionSprite.SIZE - 0.6f, ChampionSprite.SIZE - 0.6f);
         int startX=0, startY=0, endX=0, endY=0;
 
         // X-Axis
@@ -216,11 +216,11 @@ public class Game implements ApplicationListener {
         this.spriteCollisionOnYAxis(sprite, spriteRect);
     }
 
-	private void spriteCollisionOnYAxis(Sprite sprite, Rectangle spriteRect) {
-		for (Sprite element : sprites) {
+	private void spriteCollisionOnYAxis(ChampionSprite sprite, Rectangle spriteRect) {
+		for (ChampionSprite element : sprites) {
             Rectangle elemRect = rectPool.obtain();
             elemRect.set(element.getX() + 0.3f, element.getY() - 0.3f,
-                    Sprite.SIZE - 0.6f, Sprite.SIZE - 0.6f);
+                    ChampionSprite.SIZE - 0.6f, ChampionSprite.SIZE - 0.6f);
             if (element != sprite) {
                 if (spriteRect.overlaps(elemRect)) {
                     sprite.setDY(0);
@@ -234,7 +234,7 @@ public class Game implements ApplicationListener {
         rectPool.free(spriteRect);
 	}
 
-	private void tileCollisionOnYAxis(Sprite sprite, int layerIndex, Rectangle spriteRect) {
+	private void tileCollisionOnYAxis(ChampionSprite sprite, int layerIndex, Rectangle spriteRect) {
 		for (Rectangle tile: tiles) {
             if (spriteRect.overlaps(tile)) {
                 sprite.setDY(0);
@@ -243,24 +243,24 @@ public class Game implements ApplicationListener {
         }
 	}
 
-	private void yAxisCollision(int startX,int startY,int endX,int endY,Sprite sprite, int layerIndex, Rectangle spriteRect) {
+	private void yAxisCollision(int startX,int startY,int endX,int endY,ChampionSprite sprite, int layerIndex, Rectangle spriteRect) {
 		
 		if (sprite.getDY() > 0) {
-            startY = endY = (int)(sprite.getY() + Sprite.SIZE + sprite.getDY());
+            startY = endY = (int)(sprite.getY() + ChampionSprite.SIZE + sprite.getDY());
         } else {
             startY = endY = (int)(sprite.getY() + sprite.getDY());
         }
         startX = (int)(sprite.getX());
-        endX = (int)(sprite.getX() + Sprite.SIZE);
+        endX = (int)(sprite.getX() + ChampionSprite.SIZE);
         setTiles(startX, startY, endX, endY, tiles, layerIndex);
         spriteRect.y += sprite.getDY();
 	}
 
-	private void spriteCollisionOnXAxis(Sprite sprite, Rectangle spriteRect) {
-		for (Sprite element : sprites) {
+	private void spriteCollisionOnXAxis(ChampionSprite sprite, Rectangle spriteRect) {
+		for (ChampionSprite element : sprites) {
             Rectangle elemRect = rectPool.obtain();
             elemRect.set(element.getX() + 0.3f, element.getY() - 0.3f,
-                         Sprite.SIZE - 0.6f, Sprite.SIZE - 0.6f);
+                         ChampionSprite.SIZE - 0.6f, ChampionSprite.SIZE - 0.6f);
             if (element != sprite) {
                 if (spriteRect.overlaps(elemRect)) {
                     sprite.setDX(0);
@@ -271,7 +271,7 @@ public class Game implements ApplicationListener {
 		spriteRect.x = sprite.getX() + 0.3f;
 	}
 
-	private void tileCollisionOnXAxis(Sprite sprite, int layerIndex, Rectangle spriteRect) {
+	private void tileCollisionOnXAxis(ChampionSprite sprite, int layerIndex, Rectangle spriteRect) {
 		for (Rectangle tile: tiles) {
             if(spriteRect.overlaps(tile)) {
                 sprite.setDX(0);
@@ -280,15 +280,15 @@ public class Game implements ApplicationListener {
         }
 	}
 
-	private void xAxisCollisions(int startX,int startY,int endX,int endY,Sprite sprite, int layerIndex, Rectangle spriteRect) {
+	private void xAxisCollisions(int startX,int startY,int endX,int endY,ChampionSprite sprite, int layerIndex, Rectangle spriteRect) {
 		
 		if(sprite.getDX() > 0) {
-            startX = endX = (int)(sprite.getX() + Sprite.SIZE + sprite.getDX());
+            startX = endX = (int)(sprite.getX() + ChampionSprite.SIZE + sprite.getDX());
         } else {
             startX = endX = (int)(sprite.getX() + sprite.getDX());
         }
         startY = (int)(sprite.getY());
-        endY = (int)(sprite.getY() + Sprite.SIZE);
+        endY = (int)(sprite.getY() + ChampionSprite.SIZE);
         setTiles(startX, startY, endX, endY, tiles, layerIndex);
         spriteRect.x += sprite.getDX();
 	}

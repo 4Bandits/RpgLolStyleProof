@@ -1,11 +1,11 @@
 package com.rpg.prueba.entities;
 
-import com.rpg.prueba.sprites.Sprite;
+import com.rpg.prueba.sprites.ChampionSprite;
 
-public class Champion extends Sprite {
+public class Champion extends ChampionSprite {
 
    protected String name;
-    
+   protected PlayerInputProcessor inputProcessor;
    protected int HP;
    protected int mana;
     
@@ -23,8 +23,12 @@ public class Champion extends Sprite {
 
    public Champion (float x, float y){
 	   super(x,y);
+	   inputProcessor = new PlayerInputProcessor(this);
    }
-    
+   public void handleInputOn(View window){
+	 inputProcessor.handleInputOn(window);
+   }
+
 
 	public String getName() {
 		return name;
