@@ -17,10 +17,6 @@ public class Archer extends Champion {
         walkBackAnimation = new Animation(0.3f, getFrames(texture, 5, 4, size));
         walkLeftAnimation = new Animation(0.3f, getFrames(texture, 4, 4, size));
         walkRightAnimation = new Animation(0.3f, getFrames(texture, 4, 4, size));
-        attackFrontAnimation = new Animation(0.3f, getFrames(texture, 3, 4, size));
-        attackBackAnimation = new Animation(0.3f, getFrames(texture, 2, 4, size));
-        attackLeftAnimation = new Animation(0.3f, getFrames(texture, 1, 4, size));
-        attackRightAnimation = new Animation(0.3f, getFrames(texture, 1, 4, size));
         deathAnimation = new Animation(0.3f, getFrames(texture, 0, 4, size));
 
         // Attirbutes

@@ -26,14 +26,18 @@ public class AtackSprite extends Sprite{
     public void render(SpriteBatch batch) {
         if(used)
             this.draw(batch);
+        
     }
 
     public void updateCoordinates(float x, float y) {
         this.setPosition(x, y);
     }
 
-    public void setUsed() {
-        this.used = !this.used;
+    public void on() {
+        this.used = true;
+    }
+    public void off() {
+        this.used = false;
     }
 
     public boolean isUsed() {

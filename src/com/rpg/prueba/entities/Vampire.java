@@ -1,17 +1,13 @@
 package com.rpg.prueba.entities;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 
 public class Vampire extends Champion {
 
-	Texture texture_hurt;
-	Texture texture_atk;
     public Vampire(float x, float y, int size) {
         super( x, y);
+        atackSprite= new AtackSprite(GameContentManager.eneBall, x, y);
         texture = GameContentManager.vampire;
-        texture_atk = GameContentManager.vampire_atk;
-        texture_hurt = GameContentManager.vampire_hurt;
         // Animations
         standFrontAnimation = new Animation(0.3f, getFrames(texture, 0, 1, size));
         standBackAnimation = new Animation(0.3f, getFrames(texture, 3, 1, size));

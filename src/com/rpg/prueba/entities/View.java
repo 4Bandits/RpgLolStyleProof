@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -55,8 +54,10 @@ public class View {
     private Array<BitmapFont> fonts;
 
     private GameInputProcessor inputProcessor;
+    Color originalSPriteBatchColor;
 
     public View(Level level) {
+    	
         stage = new Stage();
         inputProcessor = new GameInputProcessor();
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -74,6 +75,7 @@ public class View {
         green = level.getGreen();
         blue = level.getBlue();
         spriteBatch = new SpriteBatch();
+        originalSPriteBatchColor= new Color(spriteBatch.getColor());
 
         // Hide the mouse cursor.
         Gdx.input.setCursorCatched(true);
@@ -172,120 +174,15 @@ public class View {
 
     private void renderChampionSprites() {
     	
-    	ShaderProgram shader= this.colorShader();
-    	Color c;
-    	//Usar los lamdas de java 8
-        for (ChampionSprite sprite : sortedUpSprites) {
-        	sprite.setAnimationTime(Gdx.graphics.getDeltaTime());
-              //Hacer State
-            switch (sprite.getState()) {
-                case standFront:
-                	sprite.setCurrentFrame(sprite.getStandFrontFrame());
-                    break;
-                case standBack:
-                	sprite.setCurrentFrame(sprite.getStandBackFrame());
-                    break;
-                case standLeft:
-                	sprite.setCurrentFrame(sprite.getStandLeftFrame());
-                    break;
-                case standRight:
-                	sprite.setCurrentFrame(sprite.getStandRightFrame());
-                    break;
-                case walkFront:
-                	sprite.setCurrentFrame(sprite.getWalkFrontFrame());
-                    break;
-                case walkBack:
-                	sprite.setCurrentFrame(sprite.getWalkBackFrame());
-                    break;
-                case walkLeft:
-                	sprite.setCurrentFrame(sprite.getWalkLeftFrame());
-                    break;
-                case walkRight:
-                	sprite.setCurrentFrame(sprite.getWalkRightFrame());
-                    break;
-                case attackFront:
-                	c=spriteBatch.getColor();
-                	sprite.setCurrentFrame(sprite.getStandFrontFrame());
-                	spriteBatch.setColor(Color.BLUE);
-                    sprite.setColor(Color.BLUE);
-                    spriteBatch.draw(sprite.getTexture(),sprite.getX(),sprite.getY(),sprite.getOriginX(),sprite.getOriginY(),sprite.getWidth(),sprite.getHeight(),1,1);
-                    spriteBatch.setColor(c);
-                    
-                    break;
-                case attackBack:
-                	c=spriteBatch.getColor();
-                	sprite.setCurrentFrame(sprite.getStandBackFrame());
-                	spriteBatch.setColor(Color.BLUE);
-                    sprite.setColor(Color.BLUE);
-                    spriteBatch.draw(sprite.getTexture(),sprite.getX(),sprite.getY(),sprite.getOriginX(),sprite.getOriginY(),sprite.getWidth(),sprite.getHeight(),1,1);
-                    spriteBatch.setShader(null);
-                    spriteBatch.setColor(c);
-                    break;
-                case attackLeft:
-                	c=spriteBatch.getColor();
-                	sprite.setCurrentFrame(sprite.getStandLeftFrame());
-                	spriteBatch.setColor(Color.BLUE);
-                    sprite.setColor(Color.BLUE);
-                    spriteBatch.draw(sprite.getTexture(),sprite.getX(),sprite.getY(),sprite.getOriginX(),sprite.getOriginY(),sprite.getWidth(),sprite.getHeight(),1,1);
-                    spriteBatch.setShader(null);
-                    spriteBatch.setColor(c);
-                	break;
-                case attackRight:
-                	c=spriteBatch.getColor();
-                	sprite.setCurrentFrame(sprite.getStandRightFrame());
-                	spriteBatch.setColor(Color.BLUE);
-                    sprite.setColor(Color.BLUE);
-                    spriteBatch.draw(sprite.getTexture(),sprite.getX(),sprite.getY(),sprite.getOriginX(),sprite.getOriginY(),sprite.getWidth(),sprite.getHeight(),1,1);
-                    spriteBatch.setShader(null);
-                    spriteBatch.setColor(c);
-                	break;
-                case death:
-                	sprite.setCurrentFrame(sprite.getDeathFrame());
-                    break;
-            }
+    	
+    	spriteBatch.setColor(originalSPriteBatchColor);
+    	sortedUpSprites.forEach(sprite -> sprite.render(spriteBatch));
 
-            if (!sprite.isFacingLeft()) {
-                spriteBatch.draw(sprite.getCurrentFrame(), sprite.getX(), sprite.getY(),
-                                 ChampionSprite.SIZE, ChampionSprite.SIZE);
-            } else {
-                spriteBatch.draw(sprite.getCurrentFrame(), sprite.getX() + ChampionSprite.SIZE, sprite.getY(),
-                                 -ChampionSprite.SIZE, ChampionSprite.SIZE);
-            }
-        }
     }
 
-    private ShaderProgram colorShader() {
-    	String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
-                + "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-                + "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-                + "uniform mat4 u_projTrans;\n" //
-                + "varying vec4 v_color;\n" //
-                + "varying vec2 v_texCoords;\n" //
-                + "\n" //
-                + "void main()\n" //
-                + "{\n" //
-                + "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-                + "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-                + "   gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
-                + "}\n";
-            String fragmentShader = "#ifdef GL_ES\n" //
-                + "#define LOWP lowp\n" //
-                + "precision mediump float;\n" //
-                + "#else\n" //
-                + "#define LOWP \n" //
-                + "#endif\n" //
-                + "varying LOWP vec4 v_color;\n" //
-                + "varying vec2 v_texCoords;\n" //
-                + "uniform sampler2D u_texture;\n" //
-                + "void main()\n"//
-                + "{\n" //
-                + "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords).a;\n" //
-                + "}";
-
-            return new ShaderProgram(vertexShader, fragmentShader);
-	}
 
 	private void renderChampionSpritesTop() {
+		spriteBatch.setColor(originalSPriteBatchColor);
         for (ChampionSprite sprite : sortedDownSprites) {
         	sprite.setAnimationTime(Gdx.graphics.getDeltaTime());
 
@@ -315,19 +212,19 @@ public class View {
                 	sprite.setCurrentFrameTop(sprite.getWalkRightFrame());
                     break;
                 case attackFront:
-                	sprite.setCurrentFrameTop(sprite.getAttackFrontFrame());
+                	sprite.setCurrentFrameTop(sprite.getStandFrontFrame());
                     
                     break;
                 case attackBack:
-                	sprite.setCurrentFrameTop(sprite.getAttackBackFrame());
+                	sprite.setCurrentFrameTop(sprite.getStandBackFrame());
                     
                     break;
                 case attackLeft:
-                	sprite.setCurrentFrameTop(sprite.getAttackLeftFrame());
+                	sprite.setCurrentFrameTop(sprite.getStandLeftFrame());
                     
                     break;
                 case attackRight:
-                	sprite.setCurrentFrameTop(sprite.getAttackRightFrame());
+                	sprite.setCurrentFrameTop(sprite.getStandRightFrame());
                     
                     break;
                 case death:
@@ -346,17 +243,20 @@ public class View {
     }
 
     private void renderStationaryChampionSprites() {
-        for (StationarySprite stationaryChampionSprite : stationarySprites) {
+    	spriteBatch.setColor(originalSPriteBatchColor);
+    	
+        	stationarySprites.forEach(stationaryChampionSprite ->{
             stationaryChampionSprite.setAnimationTime(Gdx.graphics.getDeltaTime());
 
             stationaryChampionSprite.setCurrentFrame(stationaryChampionSprite.getAnimationFrame());
 
             spriteBatch.draw(stationaryChampionSprite.getCurrentFrame(), stationaryChampionSprite.getX(), stationaryChampionSprite.getY(),
                              stationaryChampionSprite.getSize(), stationaryChampionSprite.getSize());
-        }
+        			 });
     }
 
     private void renderStationaryChampionSpritesTop() {
+    	spriteBatch.setColor(originalSPriteBatchColor);
         for (StationarySprite stationaryChampionSprite : stationarySprites) {
             spriteBatch.draw(stationaryChampionSprite.getHeadTexture(),
                              stationaryChampionSprite.getX(), stationaryChampionSprite.getY() + 1,

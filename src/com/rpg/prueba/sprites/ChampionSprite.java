@@ -1,16 +1,21 @@
 package com.rpg.prueba.sprites;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.graphics.g2d.Sprite;;
+import com.rpg.prueba.entities.AtackSprite;;
 
 public class ChampionSprite extends Sprite  implements Comparable<ChampionSprite> {
     
     public static float SIZE =2.425f; //1.625f;
     public static float MAX_VELOCITY = 4f;
     public static float DAMPING = 0.87f;
+    
 
     public enum State {
         standFront,
@@ -27,6 +32,11 @@ public class ChampionSprite extends Sprite  implements Comparable<ChampionSprite
         attackBack,
         attackLeft,
         attackRight,
+        
+        hurtFront,
+        hurtBack,
+        hurtLeft,
+        hurtRight,
 
         death
     }
@@ -49,11 +59,12 @@ public class ChampionSprite extends Sprite  implements Comparable<ChampionSprite
     protected Animation walkBackAnimation;
     protected Animation walkLeftAnimation;
     protected Animation walkRightAnimation;
-    protected Animation attackFrontAnimation;
-    protected Animation attackBackAnimation;
-    protected Animation attackLeftAnimation;
-    protected Animation attackRightAnimation;
     protected Animation deathAnimation;
+    
+    protected AtackSprite atackSprite;
+  
+    protected float timeSinceLastCast = 0;
+    protected float cooldown = 2;
 
     public ChampionSprite(float x, float y) {
         
@@ -63,6 +74,31 @@ public class ChampionSprite extends Sprite  implements Comparable<ChampionSprite
         setPosition(x, y);
         state = State.standFront;
         facingLeft = false;
+    }
+    public void update(float delta){
+    	 timeSinceLastCast += Gdx.graphics.getRawDeltaTime();
+         if(timeSinceLastCast > cooldown){
+        	 atackSprite.off();
+        	 atackSprite.setPosition(this.getX(),this.getY());
+             this.timeSinceLastCast = 0;
+         }
+         
+         if(atackSprite.isUsed()) {
+        	 atackSprite.update(delta);
+ }
+    	
+    }
+    
+ 
+    public void renderAtack(SpriteBatch sp){
+    
+        atackSprite.render(sp);  
+     }
+    public void atackOn(){
+    	atackSprite.on();
+    }
+    public void atackOff(){
+    	atackSprite.off();
     }
 
     public TextureRegion[] getFrames(Texture texture, int row, int columns, int size) {
@@ -201,21 +237,7 @@ public class ChampionSprite extends Sprite  implements Comparable<ChampionSprite
         return walkRightAnimation.getKeyFrame(animationTime, true);
     }
 
-    public TextureRegion getAttackFrontFrame() {
-        return attackFrontAnimation.getKeyFrame(animationTime, true);
-    }
 
-    public TextureRegion getAttackBackFrame() {
-        return attackBackAnimation.getKeyFrame(animationTime, true);
-    }
-
-    public TextureRegion getAttackLeftFrame() {
-        return attackLeftAnimation.getKeyFrame(animationTime, true);
-    }
-
-    public TextureRegion getAttackRightFrame() {
-        return attackRightAnimation.getKeyFrame(animationTime, true);
-    }
 
     public TextureRegion getDeathFrame() {
         return deathAnimation.getKeyFrame(animationTime, true);
@@ -230,6 +252,72 @@ public class ChampionSprite extends Sprite  implements Comparable<ChampionSprite
         return other.comparableY().compareTo(comparableY());
 
     }
+    
+    public void render(SpriteBatch spriteBatch){
+    	setAnimationTime(Gdx.graphics.getDeltaTime());
+        //Hacer State
+      switch (getState()) {
+          case standFront:
+          	setCurrentFrame(getStandFrontFrame());
+              break;
+          case standBack:
+          	setCurrentFrame(getStandBackFrame());
+              break;
+          case standLeft:
+          	setCurrentFrame(getStandLeftFrame());
+              break;
+          case standRight:
+          	setCurrentFrame(getStandRightFrame());
+              break;
+          case walkFront:
+          	setCurrentFrame(getWalkFrontFrame());
+              break;
+          case walkBack:
+          	setCurrentFrame(getWalkBackFrame());
+              break;
+          case walkLeft:
+          	setCurrentFrame(getWalkLeftFrame());
+              break;
+          case walkRight:
+          	setCurrentFrame(getWalkRightFrame());
+              break;
+          case attackFront:
+          	setCurrentFrame(getStandFrontFrame());
+          	spriteBatch.setColor(Color.BLUE);
+          	renderAtack(spriteBatch);
+              break;
+          case attackBack:
+          	setCurrentFrame(getStandBackFrame());
+          	spriteBatch.setColor(Color.BLUE);
+          	renderAtack(spriteBatch);
+          	break;
+          case attackLeft:
+          	setCurrentFrame(getStandLeftFrame());
+          	spriteBatch.setColor(Color.BLUE);
+          	renderAtack(spriteBatch);
+          	break;
+          case attackRight:
+              
+          	setCurrentFrame(getStandRightFrame());
+          	spriteBatch.setColor(Color.BLUE);
+          	renderAtack(spriteBatch);
+          	break;
+          case death:
+          	setCurrentFrame(getDeathFrame());
+              break;
+		default:
+			break;
+      }
+
+      if (!isFacingLeft()) {
+          spriteBatch.draw(getCurrentFrame(), getX(), getY(),
+                           ChampionSprite.SIZE, ChampionSprite.SIZE);
+      } else {
+          spriteBatch.draw(getCurrentFrame(), getX() + ChampionSprite.SIZE, getY(),
+                           -ChampionSprite.SIZE, ChampionSprite.SIZE);
+      }
+  }
+    }
 
 	
-}
+

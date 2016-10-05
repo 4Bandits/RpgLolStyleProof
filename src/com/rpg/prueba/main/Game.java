@@ -162,6 +162,7 @@ public class Game implements ApplicationListener {
             // Apply damping to the velocity so the sprite doesn't walk infinitely once a key is pressed.
             sprite.setDX(sprite.getDX() * ChampionSprite.DAMPING);
             sprite.setDY(sprite.getDY() * ChampionSprite.DAMPING);
+            sprite.update(deltaTime);
 
         }
     }

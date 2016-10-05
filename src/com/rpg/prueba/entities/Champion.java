@@ -8,6 +8,8 @@ public class Champion extends ChampionSprite {
    protected PlayerInputProcessor inputProcessor;
    protected int HP;
    protected int mana;
+   
+   
     
     //Speed
    protected int movSpeed;
@@ -25,6 +27,8 @@ public class Champion extends ChampionSprite {
 	   super(x,y);
 	   inputProcessor = new PlayerInputProcessor(this);
    }
+   
+  
    public void handleInputOn(View window){
 	 inputProcessor.handleInputOn(window);
    }

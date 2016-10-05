@@ -57,7 +57,7 @@ public class PlayerInputProcessor {
 	           player.setDY(-ChampionSprite.MAX_VELOCITY/1.5f);
 	      }
 	       if(isHeadingDownAndLeft()){
-	      	 	player.setFacingLeft(true);
+	      	   player.setFacingLeft(true);
 	           player.setState(ChampionSprite.State.walkLeft);
 	           player.setDX(-ChampionSprite.MAX_VELOCITY/1.5f);
 	           player.setDY(-ChampionSprite.MAX_VELOCITY/1.5f);
@@ -65,24 +65,28 @@ public class PlayerInputProcessor {
 	       if(isAtackingLeft()){
 	       	player.setFacingLeft(true);
 	           player.setState(ChampionSprite.State.attackLeft);
+	           player.atackOn();
 	           player.setDX(0f);
 	           player.setDY(0f);
 	       }
 	       if(isAtackingRight()){
 	       	player.setFacingLeft(false);
 	           player.setState(ChampionSprite.State.attackRight);
+	           player.atackOn();
 	           player.setDX(0f);
 	           player.setDY(0f);
 	       }
 	       if(isAtackingFront()){
 	       	player.setFacingLeft(false);
 	           player.setState(ChampionSprite.State.attackFront);
+	           player.atackOn();
 	           player.setDX(0f);
 	           player.setDY(0f);
 	       }
 	       if(isAtackingBack()){
 	       	player.setFacingLeft(false);
 	           player.setState(ChampionSprite.State.attackBack);
+	           player.atackOn();
 	           player.setDX(0f);
 	           player.setDY(0f);
 	       }
